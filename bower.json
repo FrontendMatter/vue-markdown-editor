@@ -1,0 +1,7 @@
+{
+  "name": "vue-markdown-editor",
+  "description": "A Vue.js markdown editor component.",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {}
+}
