@@ -43,5 +43,19 @@
     "vue": "^1.0.15",
     "vue-transfer-dom": "^1.0.0",
     "vue-validator": "^2.0.0-alpha.15"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/themekit/vue-markdown-editor.git"
+  },
+  "keywords": [
+    "vue",
+    "vue.js",
+    "markdown",
+    "editor"
+  ],
+  "bugs": {
+    "url": "https://github.com/themekit/vue-markdown-editor/issues"
+  },
+  "homepage": "https://github.com/themekit/vue-markdown-editor#readme"
 }
