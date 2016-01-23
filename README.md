@@ -7,7 +7,7 @@ A Vue.js markdown editor component.
 #### Install
 
 ```bash
-npm install vue-markdown-validator
+npm install vue-markdown-editor
 ```
 
 #### Dependencies
@@ -84,7 +84,6 @@ new Vue({
 	</form>
 </div>
 ```
-
 
 ## Build
 
