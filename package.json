@@ -40,6 +40,8 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "vue": "^1.0.15"
+    "vue": "^1.0.15",
+    "vue-transfer-dom": "^1.0.0",
+    "vue-validator": "^2.0.0-alpha.15"
   }
 }
