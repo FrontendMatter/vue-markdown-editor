@@ -16,11 +16,11 @@ npm install vue-markdown-editor
 // Vue library
 import Vue from 'vue'
 
-// Vue Validator
+// vue-validator
 import VueValidator from 'vue-validator'
 Vue.use(VueValidator)
 
-// VueTransferDom
+// vue-transfer-dom
 import VueTransferDom from 'vue-transfer-dom'
 Vue.use(VueTransferDom)
 ```
@@ -46,7 +46,7 @@ new Vue({
 	},
 	methods: {
 		submit () {
-			if (validator.valid) {
+			if (this.validator.valid) {
 				// do stuff
 			}
 		}
