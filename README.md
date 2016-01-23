@@ -30,7 +30,13 @@ Vue.use(VueTransferDom)
 ##### JavaScript (ES6):
 
 ```js
+// load styling
+import 'vue-markdown-editor/dist/vue-markdown-editor.css'
+
+// load component
 import { MarkdownEditor } from 'vue-markdown-editor'
+
+// vue root instance example
 new Vue({
 	el: '#app',
 	data () {
