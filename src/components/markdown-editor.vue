@@ -11,7 +11,8 @@
 					debounce="300"
 					placeholder="Write some content ..."
 					:autofocus="isFullscreen"
-					v-validate:content="validate"
+					field="content"
+					v-validate="validate"
 					@valid="updateValidator" @invalid="updateValidator">
 				</textarea>
 			</validator>
@@ -25,7 +26,7 @@
 			<button v-else @click.stop="fullscreen=true" type="button" class="md-editor-floating-button"><i class="fa fa-arrows-alt"></i></button>
 
 			<!-- Markdown Preview -->
-			<div v-el:preview v-scrollable>
+			<div :class="{ scrollable: isFullscreen }" v-el:preview>
 				<div class="md-preview" v-if="model" v-html="model | marked"></div>
 			</div>
 		</div>
@@ -85,20 +86,20 @@
 			isFullscreen () {
 				return this.$parent.$options.name === 'markdown-editor' && this.fullscreen
 			},
-			textarea () {
-				return this.$els.textarea
-			},
-			preview () {
-				return this.$els.preview
-			},
-			initiators () {
-				return [this.preview, this.textarea]
-			},
 			initiatorEvents () {
 				return ['mouseenter', 'touchstart']
 			}
 		},
 		methods: {
+			initiators () {
+				return [this.preview(), this.textarea()]
+			},
+			textarea () {
+				return $(this.$els.textarea).get(0)
+			},
+			preview () {
+				return $(this.$els.preview).get(0)
+			},
 			setScrollInitiator (e) {
 				this.scrollInitiator = e.target
 			},
@@ -106,10 +107,10 @@
 				return (element1.scrollHeight - element1.clientHeight) / (element2.scrollHeight - element2.clientHeight)
 			},
 			textareaScrollFactor () {
-				return this.calcScrollFactor(this.textarea, this.preview)
+				return this.calcScrollFactor(this.textarea(), this.preview())
 			},
 			previewScrollFactor () {
-				return this.calcScrollFactor(this.preview, this.textarea)
+				return this.calcScrollFactor(this.preview(), this.textarea())
 			},
 			scrollFactorMax () {
 				return Math.max.apply(null, [this.textareaScrollFactor(), this.previewScrollFactor()])
@@ -123,19 +124,20 @@
 				}
 				return Math.round(scrollTop * scrollFactor)
 			},
-			syncScrollTextarea (scrollTop) {
-				if (this.scrollInitiator === this.preview) {
+			syncScrollTextarea (e) {
+				if (this.scrollInitiator === this.preview()) {
+					let scrollTop = e.target.scrollTop
 					let isLargest = this.textareaScrollFactor() > 1
 					let scrollFactor = isLargest ? this.scrollFactorMax() : this.scrollFactorMin()
-					this.textarea.scrollTop = this.scrollTopFactor(scrollTop, scrollFactor)
+					this.textarea().scrollTop = this.scrollTopFactor(scrollTop, scrollFactor)
 				}
 			},
 			syncScrollPreview (e) {
-				if (this.scrollInitiator === this.textarea) {
+				if (this.scrollInitiator === this.textarea()) {
 					let scrollTop = e.target.scrollTop
 					let isLargest = this.previewScrollFactor() > 1
 					let scrollFactor = isLargest ? this.scrollFactorMax() : this.scrollFactorMin()
-					this.preview.scrollTop = this.scrollTopFactor(scrollTop, scrollFactor)
+					this.preview().scrollTop = this.scrollTopFactor(scrollTop, scrollFactor)
 				}
 			},
 			updateValidator () {
@@ -146,29 +148,27 @@
 			if (this.markedOptions) {
 				marked.setOptions(this.markedOptions)
 			}
-			if (this.isFullscreen) {
-				this.$on('scrolling.tk.scrollable', this.syncScrollTextarea)
-			}
 		},
 		ready () {
 			if (this.isFullscreen) {
-				this.initiators.forEach((initiator) => {
+				this.initiators().forEach((initiator) => {
 					this.initiatorEvents.forEach((eventName) => {
 						initiator.addEventListener(eventName, this.setScrollInitiator)
 					})
 				})
-				$(this.textarea).on('scroll', this.syncScrollPreview)
+				$(this.textarea()).on('scroll', this.syncScrollPreview)
+				$(this.preview()).on('scroll', this.syncScrollTextarea)
 			}
 		},
 		destroyed () {
 			if (this.isFullscreen) {
-				this.initiators.forEach((initiator) => {
+				this.initiators().forEach((initiator) => {
 					this.initiatorEvents.forEach((eventName) => {
-						this.initiator.removeEventListener(eventName, this.setScrollInitiator)
+						initiator.removeEventListener(eventName, this.setScrollInitiator)
 					})
 				})
-				$(this.textarea).off('scroll', this.syncScrollPreview)
-				this.$off('scrolling.tk.scrollable', this.syncScrollTextarea)
+				$(this.textarea()).off('scroll', this.syncScrollPreview)
+				$(this.preview()).off('scroll', this.syncScrollTextarea)
 			}
 		}
 	}
@@ -248,5 +248,12 @@
 				padding-top: 20px;
 			}
 		}
+	}
+	.scrollable {
+		-webkit-overflow-scrolling: touch;
+		overflow-y: scroll;
+		overflow-x: auto;
+		height: 100%;
+		position: relative;
 	}
 </style>
